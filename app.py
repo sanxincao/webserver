@@ -11,7 +11,7 @@ from functools import wraps
 import pymysql
 #import secrets
 
-conn="mysql+pymysql://new:Ztc1639643261!@122.51.134.15:3306/new"
+conn="mysql+pymysql://root:z1639643261@122.51.134.15:3306/new"
 #grant all privileges on new.* TO new@"%" IDENTIFIED BY "z1639643261!";
 #conn = "mysql+pymysql://{0}:{1}@{2}/{3}".format(secrets.dbuser, secrets.dbpass, secrets.dbhost, secrets.dbname)
 
