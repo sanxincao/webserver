@@ -4,7 +4,7 @@ from wtforms import StringField, IntegerField, PasswordField, BooleanField, Subm
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from flask_sqlalchemy import SQLAlchemy as _BaseSQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
-from werkzeug.urls import url_parse
+from werkzeug.urls import usrl_parse
 from flask_login import LoginManager, UserMixin, current_user, login_user, logout_user, login_required
 from functools import wraps
 
