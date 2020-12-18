@@ -52,14 +52,16 @@ class userlogin(Resource):
         now=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         print(args)
         return {
-            'avatar':'null',
-            'serviceexpiredate':now,
-            'phone':'13840702430',
-            'token':'13840702430',
-            'type':'null',
-            'password':'null',
-            'message_id':'null',
-            'message_content':'null'
+            'code':'200',
+            'content':
+            {
+                'avatar':'null',
+                'serviceexpiredate':now,
+                'password':'null',
+                'phone':'null',
+                'type':'null'
+            }
+            
         }
 api.add_resource(userlogin, '/login')
 
