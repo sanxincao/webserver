@@ -8,12 +8,7 @@ api = Api(app)
 
 
 parser = reqparse.RequestParser()
-parser.add_argument('task', type=str)
-class root(Resource):
-    def get():
-        return {
-            'token':'13840702430'
-        }
+
 
 #the server node
 """private int id;
@@ -41,13 +36,14 @@ class severnode(Resource):
         'password':'password'
         }
 
-api.add_resource(severnode, '/servernode')
+api.add_resource(severnode, '/servernode?token=123456&device=windows&version=1.0.2')
 #USER_LOGIN_API login data
 """
 
 """
 class userlogin(Resource):
     def post(self):
+        parser = reqparse.RequestParser()
         args = parser.parse_args()
         now=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         print(args)
@@ -57,9 +53,11 @@ class userlogin(Resource):
             {
                 'avatar':'null',
                 'serviceexpiredate':now,
+                
                 'password':'null',
                 'phone':'null',
-                'type':'null'
+                'type':'1',
+                'token':'123456'
             }
             
         }
