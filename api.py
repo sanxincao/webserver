@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask,request
 #import parser
 from flask_restful import Api,Resource,reqparse,abort
 import time
@@ -23,7 +23,12 @@ parser = reqparse.RequestParser()
         private string method;
         private string password;"""
 class severnode(Resource):
+
     def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('token')
+        args = parser.parse_args()
+        print(args)
         return {'id': '1',
         'name':'test',
         'icon':'white.loge',
@@ -36,17 +41,22 @@ class severnode(Resource):
         'password':'password'
         }
 
-api.add_resource(severnode, '/servernode?token=123456&device=windows&version=1.0.2')
+api.add_resource(severnode, '/')
+#api.add_resource(severnode,'/server')
 #USER_LOGIN_API login data
 """
 
 """
 class userlogin(Resource):
     def post(self):
-        parser = reqparse.RequestParser()
-        args = parser.parse_args()
+        new_x = request.get_json()
+        #new_y=request.data()
+        #thedata=request.get_data()
+        #print(thedata)
+        #print(new_y)
+        print(new_x)
         now=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-        print(args)
+        
         return {
             'code':'200',
             'content':
