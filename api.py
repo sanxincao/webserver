@@ -41,8 +41,8 @@ class severnode(Resource):
         'password':'password'
         }
 
-api.add_resource(severnode, '/')
-#api.add_resource(severnode,'/server')
+#api.add_resource(severnode, '/')
+api.add_resource(severnode,'/servernode')
 #USER_LOGIN_API login data
 """
 
@@ -77,6 +77,17 @@ class DES_KEY(Resource):
     def get(self):
         return [ 0x12, 0x34, 0x56, 0x78, 0x90, 0xAB, 0xCD, 0xEF ]
 
-
+class getstatus(Resource):
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('token')
+        parser.add_argument('device')
+        args = parser.parse_args()
+        print(args)
+    def post(self):
+        return {
+            "code":"200"
+        }
+api.add_resource(getstatus, '/')
 if __name__ == '__main__':
     app.run(debug=True)
