@@ -29,7 +29,9 @@ class severnode(Resource):
         parser.add_argument('token')
         args = parser.parse_args()
         print(args)
-        return {'id': '1',
+        return {
+        'code':'200',
+        'id': '1',
         'name':'test',
         'icon':'white.loge',
         'remark':'null',
