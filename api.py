@@ -31,6 +31,8 @@ class severnode(Resource):
         print(args)
         return {
         'code':'200',
+        'content':[
+        {
         'id': '1',
         'name':'test',
         'icon':'white.loge',
@@ -38,9 +40,24 @@ class severnode(Resource):
         'linkcount':'1',
         'selected':True,
         'host':'144.34.148.204',
-        'method':'aes-156-gcm',
         'port':'443',
+        'method':'aes-156-gcm',
         'password':'password'
+        },
+        {
+        'id': '2',
+        'name':'test',
+        'icon':'white.loge',
+        'remark':'null',
+        'linkcount':'1',
+        'selected':True,
+        'host':'144.34.148.204',
+        'port':'443',
+        'method':'aes-156-gcm',
+        'password':'password'
+        }
+
+        ]
         }
 
 #api.add_resource(severnode, '/')
@@ -58,20 +75,20 @@ class userlogin(Resource):
         #print(new_y)
         print(new_x)
         now=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-        
+
         return {
             'code':'200',
             'content':
             {
                 'avatar':'null',
                 'serviceexpiredate':now,
-                
+
                 'password':'null',
                 'phone':'null',
                 'type':'1',
                 'token':'123456'
             }
-            
+
         }
 api.add_resource(userlogin, '/login')
 
