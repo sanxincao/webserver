@@ -41,7 +41,7 @@ class severnode(Resource):
         'selected':True,
         'host':'144.34.148.204',
         'port':'443',
-        'method':'aes-156-gcm',
+        'method':'aes-256-gcm',
         'password':'password'
         },
         {
@@ -53,7 +53,7 @@ class severnode(Resource):
         'selected':True,
         'host':'144.34.148.204',
         'port':'443',
-        'method':'aes-156-gcm',
+        'method':'aes-256-gcm',
         'password':'password'
         }
 
