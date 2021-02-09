@@ -5,6 +5,7 @@ from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from flask_sqlalchemy import SQLAlchemy as _BaseSQLAlchemy
 from flask_bootstrap import Bootstrap
 from config import config
+from .main import main as main_blueprint
 
 class SQLAlchemy(_BaseSQLAlchemy):
      def apply_pool_defaults(self, app, options):
@@ -20,4 +21,5 @@ def Create_app(configname):
   app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
   bootstrap.init_app(app)
   db.init_app(app)
+  app.register_blueprint(main_blueprint)
   return app
