@@ -3,6 +3,7 @@ basedir=os.path.abspath(__file__)
 
 class Config:
   SECRET_KEY=os.environ.get('SECRET_KEY') or 'hard string'
+
   SQLALCHEMY_COMMOT_OM_TEARDOWN=True
   #todo the email sender config
   @staticmethod
