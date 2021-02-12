@@ -4,14 +4,14 @@ from wtforms import StringField, IntegerField, PasswordField, BooleanField, Subm
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from flask_sqlalchemy import SQLAlchemy as _BaseSQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
-from werkzeug.urls import usrl_parse
+from werkzeug.urls import url_parse
 from flask_login import LoginManager, UserMixin, current_user, login_user, logout_user, login_required
 from functools import wraps
 
 import pymysql
 #import secrets
 
-conn="mysql+pymysql://root:z1639643261@122.51.134.15:3306/new"
+conn="mysql+pymysql://root:@127.0.0.1:3306/webserver"
 #grant all privileges on new.* TO new@"%" IDENTIFIED BY "z1639643261!";
 #conn = "mysql+pymysql://{0}:{1}@{2}/{3}".format(secrets.dbuser, secrets.dbpass, secrets.dbhost, secrets.dbname)
 
@@ -349,7 +349,3 @@ def new_user():
     return render_template('new_user.html',  pageTitle='New User | My Flask App', form=form)
 
 
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
