@@ -1,35 +1,21 @@
+from . import db
 
-class User(UserMixin, db.Model):
-    __tablename__ = 'users'
+
+class Role(db.Model):
+    __tablename__ = 'roles'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100))
-    email = db.Column(db.String(100))
-    username = db.Column(db.String(30))
-    password_hash = db.Column(db.String(128))
-    access = db.Column(db.Integer)
-
-    def __init__(self, name, email, username, access=ACCESS['guest']):
-        self.id = ''
-        self.name = name
-        self.email = email
-        self.username = username
-        self.password_hash = ''
-        self.access = access
-
-    def is_admin(self):
-        return self.access == ACCESS['admin']
-
-    def is_user(self):
-        return self.access == ACCESS['user']
-
-    def allowed(self, access_level):
-        return self.access >= access_level
-
-    def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
-
-    def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
+    name = db.Column(db.String(64), unique=True)
+    users = db.relationship('User', backref='role', lazy='dynamic')
 
     def __repr__(self):
-        return '<User {0}>'.format(self.username)
+        return '<Role %r>' % self.name
+
+
+class User(db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), unique=True, index=True)
+    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
+
+    def __repr__(self):
+        return '<User %r>' % self.username

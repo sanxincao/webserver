@@ -1,25 +1,28 @@
-from flask import Flask, render_template, flash, redirect, url_for, request
-from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, PasswordField, BooleanField, SubmitField
-from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
-from flask_sqlalchemy import SQLAlchemy as _BaseSQLAlchemy
+from flask import Flask
 from flask_bootstrap import Bootstrap
+from flask_mail import Mail
+from flask_moment import Moment
+from flask_sqlalchemy import SQLAlchemy
 from config import config
-from .main import main as main_blueprint
 
-class SQLAlchemy(_BaseSQLAlchemy):
-     def apply_pool_defaults(self, app, options):
-        super(SQLAlchemy, self).apply_pool_defaults(app, options)
-        options["pool_pre_ping"] = True
+bootstrap = Bootstrap()
+mail = Mail()
+moment = Moment()
+db = SQLAlchemy()
 
-db=SQLAlchemy()
-bootstrap=Bootstrap()
-def Create_app(configname):
-  app=Flask(__name__)
-  app.config.from_object(config[configname])
-  config[configname].init_app(app)
-  app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-  bootstrap.init_app(app)
-  db.init_app(app)
-  app.register_blueprint(main_blueprint)
-  return app
+
+def create_app(config_name):
+    app = Flask(__name__)
+    app.config.from_object(config[config_name])
+    config[config_name].init_app(app)
+
+    bootstrap.init_app(app)
+    mail.init_app(app)
+    moment.init_app(app)
+    db.init_app(app)
+
+    from .main import main as main_blueprint
+    app.register_blueprint(main_blueprint)
+
+    return app
+
