@@ -66,7 +66,7 @@ class Role(db.Model):
 
     def __repr__(self):
         return '<Role %r>' % self.name
-
+db.Query.all()
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
