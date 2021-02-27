@@ -1,0 +1,12 @@
+C:\Users\Administrator\AppData\Local\Programs\Python\Python37\lib\site-packages\pymysql\cursors.py:170: Warning: (3719, "'utf8' is currently an alias for the character set UTF8MB3, but will be an alias for UTF8MB4 in a future release. Please consider using UTF8MB4 in order to be unambiguous.")
+  result = self._query(query)
+C:\Users\Administrator\AppData\Local\Programs\Python\Python37\lib\site-packages\pymysql\cursors.py:170: Warning: (1366, "Incorrect string value: '\\xD6\\xD0\\xB9\\xFA\\xB1\\xEA...' for column 'VARIABLE_VALUE' at row 1")
+  result = self._query(query)
+INFO  [alembic.runtime.migration] Context impl MySQLImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.autogenerate.compare] Detected added table 'roles'
+INFO  [alembic.autogenerate.compare] Detected added index 'ix_roles_default' on '['default']'
+INFO  [alembic.autogenerate.compare] Detected added table 'users'
+INFO  [alembic.autogenerate.compare] Detected added index 'ix_users_email' on '['email']'
+INFO  [alembic.autogenerate.compare] Detected added index 'ix_users_username' on '['username']'
+Generating C:\Users\Administrator\Desktop\webserver\migrations\versions\769666e232d0_initial_migration.py ...  done
