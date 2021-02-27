@@ -67,29 +67,32 @@ api.add_resource(severnode,'/servernode')
 
 """
 class userlogin(Resource):
-    def post(self):
-        new_x = request.get_json()
-        #new_y=request.data()
-        #thedata=request.get_data()
-        #print(thedata)
-        #print(new_y)
-        print(new_x)
-        now=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+  def get(self):
+    return {'test':'test'}
 
-        return {
-            'code':'200',
-            'content':
-            {
-                'avatar':'null',
-                'serviceexpiredate':now,
+  def post(self):
+      new_x = request.get_json()
+      #new_y=request.data()
+      #thedata=request.get_data()
+      #print(thedata)
+      #print(new_y)
+      print(new_x)
+      now=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
-                'password':'null',
-                'phone':'null',
-                'type':'1',
-                'token':'123456'
-            }
+      return {
+          'code':'200',
+          'content':
+          {
+              'avatar':'null',
+              'serviceexpiredate':now,
 
-        }
+              'password':'null',
+              'phone':'null',
+              'type':'1',
+              'token':'123456'
+          }
+
+      }
 api.add_resource(userlogin, '/login')
 
 class DES_KEY(Resource):
