@@ -24,6 +24,7 @@ def verify_password(phone,password):
   user=User.query.filter_by(phone=phone).first()
   if not user:
     return False
+  login_user(user)
   g.current_user=user
   g.token_used=False
   return user.verify_password(password)
@@ -65,6 +66,7 @@ class userlogin(Resource):
           }
         }
       else :
+        logout_user()
         return {
           'code':'400'
         }
@@ -128,3 +130,10 @@ class severnode(Resource):
         }
 
 api.add_resource(severnode,'/servernode')
+
+class logout(Resource):
+  def post(self):
+    logout_user()
+
+#TODO
+api.add_resource(logout,'/logout')

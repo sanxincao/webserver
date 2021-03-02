@@ -207,6 +207,30 @@ class AnonymousUser(AnonymousUserMixin):
 
 login_manager.anonymous_user = AnonymousUser
 
+class Server(db.Model):
+    __tablename__='servers'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(32))
+    icon=db.Column(db.String(64))#unique=True
+    remark=db.Column(db.String(64))
+    linknode=db.Column(db.String(64))
+    selected=(db.Boolean)
+    host=db.Column(db.String(64),unique=True)
+    port=db.Column(db.String(64))
+    method=db.Column(db.String(64))
+    password=db.Column(db.String(64))
+    baned=(db.Boolean)
+
+    def __init__(self, **kwargs):
+          super(Server, self).__init__(**kwargs)
+          if self.icon is None:
+            self.icon = 'white.loge'
+          if self.linknode is None:
+            self.linknode='1'
+          if self.remark is None:
+            self.remark='null'
+
+
 
 @login_manager.user_loader
 def load_user(user_id):
