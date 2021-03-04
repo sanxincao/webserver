@@ -1,6 +1,6 @@
 from flask_restful import Api,Resource,reqparse,abort
 from flask_httpauth import HTTPBasicAuth,HTTPTokenAuth
-from ..models import User,AnonymousUser
+from ..models import User,AnonymousUser,Server
 from flask import g, jsonify,request
 from flask_login import login_user, logout_user, login_required, \
     current_user
@@ -95,9 +95,11 @@ class severnode(Resource):
     def get(self):
         parser = reqparse.RequestParser()
         parser.add_argument('token')
+        #TODO yanzheng token 后返回server
         args = parser.parse_args()
         print(args)
-
+        server1=Server.query.filter_by(id=1).first()
+        server2=Server.query.filter_by(id=2).first()
         return {
         'code':'200',
         'content':[
