@@ -211,15 +211,15 @@ class Server(db.Model):
     __tablename__='servers'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(32))
-    icon=db.Column(db.String(64))#unique=True
+    icon=db.Column(db.String(64))
     remark=db.Column(db.String(64))
     linknode=db.Column(db.String(64))
-    selected=(db.Boolean)
     host=db.Column(db.String(64),unique=True)
     port=db.Column(db.String(64))
     method=db.Column(db.String(64))
     password=db.Column(db.String(64))
-    baned=(db.Boolean)
+    isselect=db.Column(db.Boolean,default=False)
+    isbaned=db.Column(db.Boolean,default=False)
 
     def __init__(self, **kwargs):
           super(Server, self).__init__(**kwargs)
@@ -230,6 +230,38 @@ class Server(db.Model):
           if self.remark is None:
             self.remark='null'
 
+
+    def to_json(self):
+      server_json={
+        'code':'200',
+        'content':[
+        {
+        'id': '1',
+        'name':'test',
+        'icon':'white.loge',
+        'remark':'null',
+        'linkcount':'1',
+        'selected':True,
+        'host':'144.34.148.204',
+        'port':'443',
+        'method':'aes-256-gcm',
+        'password':'password'
+        },
+        {
+        'id': '2',
+        'name':'test',
+        'icon':'white.loge',
+        'remark':'null',
+        'linkcount':'1',
+        'selected':True,
+        'host':'144.34.148.204',
+        'port':'443',
+        'method':'aes-256-gcm',
+        'password':'password'
+        }
+
+        ]
+        }
 
 
 @login_manager.user_loader
