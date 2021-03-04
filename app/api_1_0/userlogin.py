@@ -100,11 +100,12 @@ class severnode(Resource):
         print(args)
         server1=Server.query.filter_by(id=1).first()
         server2=Server.query.filter_by(id=2).first()
+        server1json=server1.to_json()
         return {
         'code':'200',
         'content':[
         {
-        'id': '1',
+        'id': ,
         'name':'test',
         'icon':'white.loge',
         'remark':'null',

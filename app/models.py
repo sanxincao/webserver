@@ -197,6 +197,12 @@ class User(UserMixin, db.Model):
     def __repr__(self):
         return '<User %r>' % self.username
 
+    def source(self):
+      return {
+          'phone':self.phone,
+          'password':self.password
+      }
+
 
 class AnonymousUser(AnonymousUserMixin):
     def can(self, permissions):
@@ -231,36 +237,18 @@ class Server(db.Model):
             self.remark='null'
 
 
-    def to_json(self):
-      server_json={
-        'code':'200',
-        'content':[
-        {
-        'id': '1',
-        'name':'test',
-        'icon':'white.loge',
-        'remark':'null',
-        'linkcount':'1',
+    def source(self):
+      return {
+        'id': self.id,
+        'name':self.name,
+        'icon':self.icon,
+        'remark':self.remark,
+        'linkcount':self.linknode,
         'selected':True,
-        'host':'144.34.148.204',
-        'port':'443',
-        'method':'aes-256-gcm',
-        'password':'password'
-        },
-        {
-        'id': '2',
-        'name':'test',
-        'icon':'white.loge',
-        'remark':'null',
-        'linkcount':'1',
-        'selected':True,
-        'host':'144.34.148.204',
-        'port':'443',
-        'method':'aes-256-gcm',
-        'password':'password'
-        }
-
-        ]
+        'host':self.host,
+        'port':self.port,
+        'method':self.method,
+        'password':self.password
         }
 
 
