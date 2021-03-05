@@ -45,14 +45,14 @@ class userlogin(Resource):
       #print(thedata)
       #print(new_y)
       print(new_x)
-      #phone=new_x['phone']
-      #password=new_x['password']
+      phone=new_x['phone']
+      password=new_x['password']
       islogin=verify_password(phone,password)
-      phone=g.current_user.source()['phone']
-      password=g.current_user.source()['password']
+      gphone=g.current_user.source()['phone']
+      gpassword=g.current_user.source()['password']
       print(islogin)
-      print(phone)
-      print(password)
+      print(gphone)
+      print(gpassword)
       now=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
       if islogin == True:
 
@@ -107,7 +107,7 @@ class severnode(Resource):
         'code':'200',
         'content':[
         {
-        'id': ,
+        'id': '1',
         'name':'test',
         'icon':'white.loge',
         'remark':'null',

@@ -200,7 +200,7 @@ class User(UserMixin, db.Model):
     def source(self):
       return {
           'phone':self.phone,
-          'password':self.password
+          'password':self.password_hash,
           'avter':self.avatar_hash
       }
 
