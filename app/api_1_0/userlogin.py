@@ -45,10 +45,14 @@ class userlogin(Resource):
       #print(thedata)
       #print(new_y)
       print(new_x)
-      phone=new_x['phone']
-      password=new_x['password']
+      #phone=new_x['phone']
+      #password=new_x['password']
       islogin=verify_password(phone,password)
+      phone=g.current_user.source()['phone']
+      password=g.current_user.source()['password']
       print(islogin)
+      print(phone)
+      print(password)
       now=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
       if islogin == True:
 
@@ -98,9 +102,7 @@ class severnode(Resource):
         #TODO yanzheng token 后返回server
         args = parser.parse_args()
         print(args)
-        server1=Server.query.filter_by(id=1).first()
-        server2=Server.query.filter_by(id=2).first()
-        server1json=server1.to_json()
+
         return {
         'code':'200',
         'content':[

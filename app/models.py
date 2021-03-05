@@ -201,6 +201,7 @@ class User(UserMixin, db.Model):
       return {
           'phone':self.phone,
           'password':self.password
+          'avter':self.avatar_hash
       }
 
 
