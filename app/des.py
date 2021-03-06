@@ -1,9 +1,8 @@
-s='sss'
-b = bytes(s, encoding='utf-8')
-#coding:utf-8
 import binascii
 import base64
 import pyDes
+#phone		Value	"jYMsUrZkT9vrfOdxUnl25w=="	string
+#password		Value	"FZz3LAvSqBjRKk7RbJ2cAQ=="	string
 
 class DES:
     #IV必须是 8 字节长度的十六进制数
@@ -24,18 +23,8 @@ class DES:
         d = k.decrypt(data)
         return d
 if __name__ == '__main__':
-    data = "1123"
+
     des = DES('12345678','1234567812345678')
-    encryptdata = des.encrypt(data.encode('utf-8'))
-    print  encryptdata
-    decryptdata = des.decrypt(encryptdata)
-    print decryptdata
 
-import pyDes
-import binascii
-#des 加密
-k = pyDes.des("", pyDes.CBC,"", pad=None, padmode=pyDes.PAD_PKCS5)
-d = k.encrypt("22222222222".encode('utf-8'))
-result= binascii.b2a_hex(d)
-print(result)
-
+    decryptdata = des.decrypt(b'jYMsUrZkT9vrfOdxUnl25w==')
+    print(decryptdata)

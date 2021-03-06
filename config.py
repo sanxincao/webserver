@@ -4,17 +4,20 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'
-    MAIL_SERVER = os.environ.get('MAIL_SERVER', 'smtp.qq.com')
-    MAIL_PORT = int(os.environ.get('MAIL_PORT', '465'))
+    MAIL_SERVER = os.environ.get('MAIL_SERVER') or 'smtp.gmail.com'
+    #MAIL_PORT = int(os.environ.get('MAIL_PORT')) or '465'
+    MAIL_PORT = 465
     # MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS', 'true').lower() in \
     #     ['true', 'on', '1']
-    MAIL_USERNAME = os.environ.get('1639643261@qq.com')
-    MAIL_PASSWORD = os.environ.get('hhixrhhzaekwdejc')
+    MAIL_USERNAME = os.environ.get('MAIL_USERNAME') or 'lonelyparabola@gmail.com'
+    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or 'ztc1639643261'
     FLASKY_MAIL_SUBJECT_PREFIX = '[Flasky]'
-    FLASKY_MAIL_SENDER = 'Flasky Admin <1639643261@qq.com>'
-    FLASKY_ADMIN = os.environ.get('FLASKY_ADMIN')
+    FLASKY_MAIL_SENDER = 'lonelyparabola@gmail.com'
+    #FLASKY_ADMIN = os.environ.get('FLASKY_ADMIN') or 'lonelyparabola@gmail.com'
+    MAIL_USE_TLS=False
+    MAIL_USE_SSL=True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-
+    #TODO 提醒用户将链接贴到浏览器上，防止503跳转失败
     @staticmethod
     def init_app(app):
         pass
