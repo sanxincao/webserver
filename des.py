@@ -6,12 +6,13 @@ import pyDes
 
 class DES:
     #IV必须是 8 字节长度的十六进制数
-    iv = '1234567812345678'
+
     #key加密密钥长度，24字节
-    key = '12345678'
-    def __init__(self, iv, key):
-        self.iv = iv
-        self.key = key
+
+    #TODO 加密密钥暂时固定
+    def __init__(self):
+        self.iv = '12345678'
+        self.key = '1234567812345678'
     def encrypt(self, data):
         k = pyDes.triple_des(self.key, pyDes.CBC, self.iv, pad=None, padmode=pyDes.PAD_PKCS5)
         d = k.encrypt(data)
@@ -22,9 +23,3 @@ class DES:
         data = base64.decodestring(data)
         d = k.decrypt(data)
         return d
-if __name__ == '__main__':
-
-    des = DES('12345678','1234567812345678')
-
-    decryptdata = des.decrypt(b'jYMsUrZkT9vrfOdxUnl25w==')
-    print(decryptdata)
