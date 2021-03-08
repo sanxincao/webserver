@@ -33,6 +33,7 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data.lower()).first()
         passworddes=desclass.encrypt(form.password.data)
+        print(passworddes)
         if user is not None and user.verify_password(passworddes):
             login_user(user, form.remember_me.data)
             next = request.args.get('next')
@@ -56,6 +57,7 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         despassword=desclass.encrypt(form.password.data)
+        desphone=desclass.encrypt(form.phone.data)
         user = User(email=form.email.data.lower(),
                     username=form.username.data,
                     phone=form.phone.data,

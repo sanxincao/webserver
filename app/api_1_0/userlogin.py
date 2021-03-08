@@ -48,11 +48,7 @@ class userlogin(Resource):
       phone=new_x['phone']
       password=new_x['password']
       islogin=verify_password(phone,password)
-      gphone=g.current_user.source()['phone']
-      gpassword=g.current_user.source()['password']
-      print(islogin)
-      print(gphone)
-      print(gpassword)
+      #
       now=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
       if islogin == True:
 
