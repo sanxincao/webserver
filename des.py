@@ -16,10 +16,18 @@ class DES:
     def encrypt(self, data):
         k = pyDes.triple_des(self.key, pyDes.CBC, self.iv, pad=None, padmode=pyDes.PAD_PKCS5)
         d = k.encrypt(data)
-        d = base64.encodestring(d)
-        return d
+        d = base64.encodebytes(d)
+        result=d.decode("utf-8")
+        return result
     def decrypt(self, data):
+        bdata=bytes(data, 'utf-8')
         k = pyDes.triple_des(self.key, pyDes.CBC, self.iv, pad=None, padmode=pyDes.PAD_PKCS5)
-        data = base64.decodestring(data)
+        data = base64.decodebytes(bdata)
         d = k.decrypt(data)
-        return d
+        result=d.decode("utf-8")
+        return result
+
+#Ec9C/XMDbtAnQrOMF51g4w==
+#Ec9C/XMDbtAnQrOMF51g4w==
+#FZz3LAvSqBjRKk7RbJ2cAQ==
+#FZz3LAvSqBjRKk7RbJ2cAQ==

@@ -60,7 +60,7 @@ def register():
         desphone=desclass.encrypt(form.phone.data)
         user = User(email=form.email.data.lower(),
                     username=form.username.data,
-                    phone=form.phone.data,
+                    phone=desphone,
                     password=despassword)
         db.session.add(user)
         db.session.commit()

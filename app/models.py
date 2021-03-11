@@ -71,11 +71,12 @@ class Role(db.Model):
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    phone=db.Column(db.String(64))
+    phone=db.Column(db.String(64), index=True)
     email = db.Column(db.String(64), unique=True, index=True)
     username = db.Column(db.String(64), unique=True, index=True)
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     password_hash = db.Column(db.String(128))
+    passwordclient=db.Column(db.String(64))
     confirmed = db.Column(db.Boolean, default=False)
     location = db.Column(db.String(64))
     about_me = db.Column(db.Text())
@@ -102,7 +103,19 @@ class User(UserMixin, db.Model):
         self.password_hash = generate_password_hash(password)
 
     def verify_password(self, password):
+        print(self.password_hash)
+        print(generate_password_hash(password))
         return check_password_hash(self.password_hash, password)
+
+
+    def verify_client(self,password):
+        print(password)
+        print(self.passwordclient)
+        if password==self.passwordclient:
+          return True
+        else:
+          return False
+
 
     def generate_confirmation_token(self, expiration=3600):
         s = Serializer(current_app.config['SECRET_KEY'], expiration)

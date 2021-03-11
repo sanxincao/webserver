@@ -2,11 +2,39 @@ from flask import Flask,request
 #import parser
 from flask_restful import Api,Resource,reqparse,abort
 import time
+import binascii
+import base64
+import pyDes
+#phone		Value	"jYMsUrZkT9vrfOdxUnl25w=="	string
+#password		Value	"FZz3LAvSqBjRKk7RbJ2cAQ=="	string
+
+class DES:
+    #IV必须是 8 字节长度的十六进制数
+
+    #key加密密钥长度，24字节
+
+    #TODO 加密密钥暂时固定
+    def __init__(self):
+        self.iv = '12345678'
+        self.key = '1234567812345678'
+    def encrypt(self, data):
+        k = pyDes.triple_des(self.key, pyDes.CBC, self.iv, pad=None, padmode=pyDes.PAD_PKCS5)
+        d = k.encrypt(data)
+        d = base64.encodebytes(d)
+        result=d.decode("utf-8")
+        return result
+    def decrypt(self, data):
+        bdata=bytes(data, 'utf-8')
+        k = pyDes.triple_des(self.key, pyDes.CBC, self.iv, pad=None, padmode=pyDes.PAD_PKCS5)
+        data = base64.decodebytes(bdata)
+        d = k.decrypt(data)
+        result=d.decode("utf-8")
+        return result
 #this file write api route
 app = Flask(__name__)
 api = Api(app)
-
-
+des=DES()
+des.encrypt('13840702430')
 parser = reqparse.RequestParser()
 
 
@@ -72,11 +100,10 @@ class userlogin(Resource):
 
   def post(self):
       new_x = request.get_json()
-      #new_y=request.data()
-      #thedata=request.get_data()
-      #print(thedata)
-      #print(new_y)
+      phone=new_x['phone']
+      password=new_x['password']
       print(new_x)
+      de
       now=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
       return {

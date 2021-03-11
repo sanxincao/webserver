@@ -6,8 +6,9 @@ from flask_login import login_user, logout_user, login_required, \
     current_user
 import time
 from . import api_bp
+from .. import DES
 
-
+des=DES()
 parser = reqparse.RequestParser()
 
 auth=HTTPBasicAuth()
@@ -20,14 +21,15 @@ def verify_password(phone,password):
   if phone=='':
     g.current_user==AnonymousUser()
     return True
-  #if password==''
-  user=User.query.filter_by(phone=phone).first()
+  user=User.query.filter_by(phone='Ec9C/XMDbtAnQrOMF51g4w=='.encode("utf-8")).first()
+  print(user)
   if not user:
+    print('not user')
     return False
   login_user(user)
   g.current_user=user
   g.token_used=False
-  return user.verify_password(password)
+  return user.verify_client('FZz3LAvSqBjRKk7RbJ2cAQ==')
 @token_auth.verify_token
 def verify_token(token):
   g.current_user=User.verify_auth_token(token)
@@ -37,23 +39,35 @@ def verify_token(token):
 
 class userlogin(Resource):
   def get(self):
-    return {'test':'test'}
+    user=User.query.filter_by(phone='Ec9C/XMDbtAnQrOMF51g4w==').first()
+    strpass='password'
+    despass=des.encrypt(strpass)
+    print(despass)
+    booler=user.verify_client('FZz3LAvSqBjRKk7RbJ2cAQ==')
+    print(booler)
+    print(user)
   def post(self):
       new_x = request.get_json()
-      #new_y=request.data()
-      #thedata=request.get_data()
-      #print(thedata)
-      #print(new_y)
-      print(new_x)
       phone=new_x['phone']
       password=new_x['password']
-      islogin=verify_password(phone,password)
-      #
+
+      if phone=='':
+        g.current_user==AnonymousUser()
+
+      user=User.query.filter_by(phone=phone).first()
+      if not user:
+        print('not user')
+      islogin=user.verify_client(password)
+      print(islogin)
       now=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
       if islogin == True:
-
+        g.current_user=user
+        g.token_used=False
+        login_user(user)
+        print('login')
         return {
           'code':'200',
+
           'content':
           {
               'avatar':'null',
@@ -66,6 +80,7 @@ class userlogin(Resource):
           }
         }
       else :
+        print('failed')
         logout_user()
         return {
           'code':'400'
@@ -97,8 +112,10 @@ class severnode(Resource):
         parser.add_argument('token')
         #TODO yanzheng token 后返回server
         args = parser.parse_args()
-        print(args)
-
+        print(args['token'])
+        istoken=verify_token(args)
+        #暂时无法验证成功
+        print(istoken)
         return {
         'code':'200',
         'content':[
