@@ -2,11 +2,10 @@ C:\Users\Administrator\AppData\Local\Programs\Python\Python37\lib\site-packages\
   result = self._query(query)
 C:\Users\Administrator\AppData\Local\Programs\Python\Python37\lib\site-packages\pymysql\cursors.py:170: Warning: (1366, "Incorrect string value: '\\xD6\\xD0\\xB9\\xFA\\xB1\\xEA...' for column 'VARIABLE_VALUE' at row 1")
   result = self._query(query)
-INFO  [alembic.runtime.migration] Context impl MySQLImpl.
-INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
-INFO  [alembic.autogenerate.compare] Detected added table 'roles'
-INFO  [alembic.autogenerate.compare] Detected added index 'ix_roles_default' on '['default']'
-INFO  [alembic.autogenerate.compare] Detected added table 'users'
-INFO  [alembic.autogenerate.compare] Detected added index 'ix_users_email' on '['email']'
-INFO  [alembic.autogenerate.compare] Detected added index 'ix_users_username' on '['username']'
-Generating C:\Users\Administrator\Desktop\webserver\migrations\versions\769666e232d0_initial_migration.py ...  done
+今天更新的mysql8，和你遇到了一模一样的问题，不知道你怎么解决的。
+我是更换了root密码的认证方式解决的，新版mysql使用的caching_sha2_password，换成mysql_native_password我就可以连上了。
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'xxxxx';
+
+评论
+ghostinshell：但是我在terminal用root账户可以正常登陆，只是在python里登陆不上。
+vps数据库权限问题解决方法
