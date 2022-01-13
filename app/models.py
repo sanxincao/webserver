@@ -229,7 +229,7 @@ login_manager.anonymous_user = AnonymousUser
 
 class Server(db.Model):
     __tablename__='servers'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, autoincrement=True,primary_key=True)
     name = db.Column(db.String(32))
     icon=db.Column(db.String(64))
     remark=db.Column(db.String(64))
