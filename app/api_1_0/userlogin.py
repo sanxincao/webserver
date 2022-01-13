@@ -38,14 +38,7 @@ def verify_token(token):
 
 
 class userlogin(Resource):
-  def get(self):
-    user=User.query.filter_by(phone='Ec9C/XMDbtAnQrOMF51g4w==').first()
-    strpass='password'
-    despass=des.encrypt(strpass)
-    print(despass)
-    booler=user.verify_client('FZz3LAvSqBjRKk7RbJ2cAQ==')
-    print(booler)
-    print(user)
+
   def post(self):
       new_x = request.get_json()
       phone=new_x['phone']
@@ -114,7 +107,7 @@ class severnode(Resource):
         args = parser.parse_args()
         print(args['token'])
         istoken=verify_token(args)
-        #暂时无法验证成功
+
         print(istoken)
         return {
         'code':'200',
