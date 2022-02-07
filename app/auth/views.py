@@ -31,10 +31,10 @@ def unconfirmed():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data.lower()).first()
-        passworddes=desclass.encrypt(form.password.data)
-        print(passworddes)
-        if user is not None and user.verify_password(passworddes):
+        user = User.query.filter_by(phone=form.phone.data).first()
+        # passworddes=desclass.encrypt(form.password.data)
+        # print(passworddes)
+        if user is not None and user.verify_password(form.password.data):
             login_user(user, form.remember_me.data)
             next = request.args.get('next')
             if next is None or not next.startswith('/'):
@@ -56,18 +56,17 @@ def logout():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        despassword=desclass.encrypt(form.password.data)
-        desphone=desclass.encrypt(form.phone.data)
+        # despassword=desclass.encrypt(form.password.data)
+        # desphone=desclass.encrypt(form.phone.data)
         user = User(email=form.email.data.lower(),
-                    username=form.username.data,
-                    phone=desphone,
-                    password=despassword)
+                    phone=form.phone.data,
+                    password=form.password.data)
         db.session.add(user)
         db.session.commit()
-        token = user.generate_confirmation_token()
-        send_email(user.email, 'Confirm Your Account',
-                   'auth/email/confirm', user=user, token=token)
-        flash('A confirmation email has been sent to you by email.')
+        # token = user.generate_confirmation_token()
+        # send_email(user.email, 'Confirm Your Account',
+        #            'auth/email/confirm', user=user, token=token)
+        # flash('A confirmation email has been sent to you by email.')
         return redirect(url_for('auth.login'))
     return render_template('auth/register.html', form=form)
 

@@ -103,7 +103,7 @@ class userlogin(Resource):
       phone=new_x['phone']
       password=new_x['password']
       print(new_x)
-      de
+
       now=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
       return {

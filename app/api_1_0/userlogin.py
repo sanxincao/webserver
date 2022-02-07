@@ -21,15 +21,14 @@ def verify_password(phone,password):
   if phone=='':
     g.current_user==AnonymousUser()
     return True
-  user=User.query.filter_by(phone='Ec9C/XMDbtAnQrOMF51g4w=='.encode("utf-8")).first()
-  print(user)
-  if not user:
-    print('not user')
+  #user=User.query.filter_by(phone='Ec9C/XMDbtAnQrOMF51g4w=='.encode("utf-8")).first()
+
+  else:
     return False
-  login_user(user)
-  g.current_user=user
-  g.token_used=False
-  return user.verify_client('FZz3LAvSqBjRKk7RbJ2cAQ==')
+  #login_user(user)
+  #g.current_user=user
+  #g.token_used=False
+
 @token_auth.verify_token
 def verify_token(token):
   g.current_user=User.verify_auth_token(token)
@@ -43,14 +42,16 @@ class userlogin(Resource):
       new_x = request.get_json()
       phone=new_x['phone']
       password=new_x['password']
-
+      print(phone)
+      print(password)
       if phone=='':
         g.current_user==AnonymousUser()
 
       user=User.query.filter_by(phone=phone).first()
       if not user:
+        print(user)
         print('not user')
-      islogin=user.verify_client(password)
+      islogin=user.verify_password(password)
       print(islogin)
       now=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
       if islogin == True:
@@ -82,8 +83,12 @@ class userlogin(Resource):
 
 api.add_resource(userlogin, '/login')
 
+class test(Resource):
+  def get(self):
+    return {'test':'test'}
 
 
+api.add_resource(test, '/test')
 # todo servernode logout api get sources from datebase and update
 
 #the server node

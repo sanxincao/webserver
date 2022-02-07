@@ -73,11 +73,9 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     phone=db.Column(db.String(64), index=True)
     email = db.Column(db.String(64), unique=True, index=True)
-    username = db.Column(db.String(64), unique=True, index=True)
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     password_hash = db.Column(db.String(128))
-    passwordclient=db.Column(db.String(64))
-    confirmed = db.Column(db.Boolean, default=False)
+    confirmed = db.Column(db.Boolean, default=True)
     location = db.Column(db.String(64))
     about_me = db.Column(db.Text())
     member_since = db.Column(db.DateTime(), default=datetime.utcnow)
@@ -108,13 +106,7 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
 
-    def verify_client(self,password):
-        print(password)
-        print(self.passwordclient)
-        if password==self.passwordclient:
-          return True
-        else:
-          return False
+
 
 
     def generate_confirmation_token(self, expiration=3600):
