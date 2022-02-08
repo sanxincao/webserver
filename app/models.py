@@ -106,9 +106,6 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
 
-
-
-
     def generate_confirmation_token(self, expiration=3600):
         s = Serializer(current_app.config['SECRET_KEY'], expiration)
         return s.dumps({'confirm': self.id}).decode('utf-8')
@@ -222,14 +219,9 @@ login_manager.anonymous_user = AnonymousUser
 class Server(db.Model):
     __tablename__='servers'
     id = db.Column(db.Integer, autoincrement=True,primary_key=True)
-    name = db.Column(db.String(32))
+    ssurl=db.Column(db.String(128))
     icon=db.Column(db.String(64))
-    remark=db.Column(db.String(64))
-    linknode=db.Column(db.String(64))
-    host=db.Column(db.String(64),unique=True)
-    port=db.Column(db.String(64))
-    method=db.Column(db.String(64))
-    password=db.Column(db.String(64))
+    v2rayurl=db.Column(db.String(128))
     isselect=db.Column(db.Boolean,default=False)
     isbaned=db.Column(db.Boolean,default=False)
 
@@ -237,26 +229,21 @@ class Server(db.Model):
           super(Server, self).__init__(**kwargs)
           if self.icon is None:
             self.icon = 'white.loge'
-          if self.linknode is None:
-            self.linknode='1'
-          if self.remark is None:
-            self.remark='null'
 
 
     def source(self):
       return {
         'id': self.id,
-        'name':self.name,
-        'icon':self.icon,
-        'remark':self.remark,
-        'linkcount':self.linknode,
-        'selected':True,
-        'host':self.host,
-        'port':self.port,
-        'method':self.method,
-        'password':self.password
+        'ssurl':self.ssurl,
+        'v2rayurl':self.v2rayurl
         }
 
+class proxyserver(db.Model):
+  __tablename__='proxyservers'
+  id = db.Column(db.Integer, autoincrement=True,primary_key=True)
+  ipv4=db.Column(db.String(64))
+  ipv6=db.Column(db.String(64))
+  isipv6=db.Column(db.Boolean,default=False)
 
 @login_manager.user_loader
 def load_user(user_id):

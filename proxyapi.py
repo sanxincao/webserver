@@ -34,7 +34,7 @@ class DES:
 app = Flask(__name__)
 api = Api(app)
 des=DES()
-des.encrypt('13840702430')
+
 parser = reqparse.RequestParser()
 
 
@@ -139,4 +139,4 @@ class getstatus(Resource):
         }
 api.add_resource(getstatus, '/')
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True,port=8000)

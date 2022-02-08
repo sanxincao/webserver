@@ -53,10 +53,12 @@ class userlogin(Resource):
         print('not user')
       islogin=user.verify_password(password)
       print(islogin)
-      now=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+
+
       if islogin == True:
         g.current_user=user
         g.token_used=False
+        # now=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         login_user(user)
         print('login')
         return {
@@ -65,10 +67,9 @@ class userlogin(Resource):
           'content':
           {
               'avatar':'null',
-              'serviceexpiredate':now,
 
-              'password':'null',
-              'phone':'null',
+              'serviceexpiredate':str(g.current_user.last_seen),
+              'phone':g.current_user.phone,
               'type':'1',
               'token':g.current_user.generate_auth_token(expiration=3600)
           }
