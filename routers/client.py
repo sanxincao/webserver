@@ -6,7 +6,7 @@ import os
 import sys
 from time import time
 from fastapi import APIRouter, Body, Depends, File, UploadFile, Form, requests, responses
-from common import add_salt, success, Error, generate_function_and_component_list
+from common import add_salt, success, Error
 from pydantic import BaseModel
 import config
 import crud
@@ -54,17 +54,6 @@ def check_everything(user: dict, device_id: str):
 def root():
     '根路由'
     return success()
-
-
-@router.post('/getComponentsDetailList')
-def get_component_detail_list(token_detail=Depends(check_token)):
-    '获取组件详情，包括版本、需哈希文件列表、哈希总值'
-    user = crud.get_user(token_detail['username'])
-    check_everything(user, token_detail['device_id'])
-    generate_result = generate_function_and_component_list(user['function_type'], user['function_list'])
-    component_detail_list = config.get('component_detail_list')
-    component_detail_list = list(filter(lambda x: x['id'] in generate_result['component_list'], component_detail_list))
-    return success({'component_detail_list': component_detail_list})
 
 
 @router.post('/login')
