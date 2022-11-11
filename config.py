@@ -1,51 +1,31 @@
-import os
-basedir = os.path.abspath(os.path.dirname(__file__))
+from json import loads as json_loads, dumps as json_dumps
+from os import path
+root_path = path.dirname(__file__)
+__config_file_path = path.join(root_path, './config.json')
 
 
-class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'
-    MAIL_SERVER = os.environ.get('MAIL_SERVER') or 'smtp.gmail.com'
-    #MAIL_PORT = int(os.environ.get('MAIL_PORT')) or '465'
-    MAIL_PORT = 465
-    # MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS', 'true').lower() in \
-    #     ['true', 'on', '1']
-    MAIL_USERNAME = os.environ.get('MAIL_USERNAME') or 'lonelyparabola@gmail.com'
-    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or 'ztc1639643261'
-    FLASKY_MAIL_SUBJECT_PREFIX = '[Flasky]'
-    FLASKY_MAIL_SENDER = 'lonelyparabola@gmail.com'
-    #FLASKY_ADMIN = os.environ.get('FLASKY_ADMIN') or 'lonelyparabola@gmail.com'
-    MAIL_USE_TLS=False
-    MAIL_USE_SSL=True
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
-    #TODO 提醒用户将链接贴到浏览器上，防止503跳转失败
-    @staticmethod
-    def init_app(app):
-        pass
-#ppepbfevrrqmbibb
-#hhixrhhzaekwdejc
-
-class DevelopmentConfig(Config):
-    DEBUG = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
-        'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite')
-    #SQLALCHEMY_DATABASE_URI='mysql+pymysql://root:password@localhost:3306/webserver'
+def get(key: str):
+    __f = open(__config_file_path, 'r')
+    __config = __f.read()
+    __config = json_loads(__config)
+    __f.close()
+    if key in __config.keys():
+        return __config[key]
+    else:
+        raise KeyError('配置里没有这个项')
 
 
-class TestingConfig(Config):
-    TESTING = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or \
-        'sqlite://'
-
-
-class ProductionConfig(Config):
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-        'sqlite:///' + os.path.join(basedir, 'data.sqlite')
-
-
-config = {
-    'development': DevelopmentConfig,
-    'testing': TestingConfig,
-    'production': ProductionConfig,
-
-    'default': DevelopmentConfig
-}
+def set(key: str, value: any):
+    __f = open(__config_file_path, 'r')
+    __config = __f.read()
+    __f.close()
+    try:
+        __config = json_loads(__config)
+        __config[key] = value
+        __f = open(__config_file_path, 'w')
+        __f.write(json_dumps(__config, ensure_ascii=False))
+        __f.close()
+        return True
+    except BaseException:
+        __f.close()
+        raise ValueError('试图写入无法JSON序列化的值')

@@ -1,18 +1,13 @@
-#Virtual Environment
+__pycache__
+components/*
+!components/.gitkeep
+datasets/*
+!datasets/.gitkeep
+record_files/*
+!record_files/.gitkeep
+client_setup.exe
+/client
+client.exe
+.vscode/
 venv/
-
-#Database connection
-secrets.py
-
-# Flask
-instance/*
-!instance/.gitignore
-.webassets-cache
-
-# Flask.Python Stack
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
-/.vs
-/.vscode
+offline.db
