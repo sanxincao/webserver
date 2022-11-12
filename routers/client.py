@@ -55,21 +55,34 @@ def root():
     '根路由'
     return success()
 
+@router.post('/register')
+def register(phone=Body(...), password=Body(...)):
+    '注册接口'
+    res=crud.create_user(phone,password)
+    if res[0]==False:
+        raise Error(10)
+    if res[0]==True:
+        return success({"message":res[1]})
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+    
 
 @router.post('/login')
-def login(username=Body(...), password=Body(...), device_id=Body(...)):
+def login(phone=Body(...), password=Body(...), device_id=Body(...)):
     '''
     登录系统，分发token
     需要满足：账户有效且存在，处于有效期内，密码输入正确，设备id属于已授权设备列表，或设备id不在已授权设备列表中但已授权设备总数未达上限（此时会自动添加）
     '''
-    res = crud.get_user(username)
+    res = crud.get_user(phone)
     if res is None:
         raise Error(11)
-    if sha1(add_salt(password, 1).encode()).hexdigest() != res['password']:
+    # if sha1(add_salt(password, 1).encode()).hexdigest() != res['password']:
+    if  password != res['password']:
+        print(sha1(password.encode()).hexdigest())
+        print(res['password'])
         raise Error(12)
     if res['disabled']:
         raise Error(13)
-    if (datetime.now() - res['expire_time']).total_seconds() > 0:
+    if (datetime.now() - res['expire_time']).total_seconds() > 0:# 检查用户是否过期
         raise Error(14)
     if device_id not in res['authorized_device_list']:
         if len(res['authorized_device_list']) >= res['max_authorized_device_count']:
@@ -80,7 +93,7 @@ def login(username=Body(...), password=Body(...), device_id=Body(...)):
             del user['create_time'], user['update_time']
             crud.change_user_information(**user)
     token = {
-        "username": username,
+        "phone": phone,
         "device_id": device_id,
         "login_time": time(),
         "expire": res['expire_time'].timestamp()

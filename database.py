@@ -20,7 +20,7 @@ class User(Base):
     # 字段
     phone = Column(String(20), primary_key=True, comment='电话号码')
     password = Column(String(40), comment='密码(sha1)')
-    authorized_device_list = Column(JSON, default=[], comment='已授权的设备')
+    authorized_device_list = Column(JSON, default=[], comment='已授权的设备')   #正在登陆的设备
     max_authorized_device_count = Column(Integer, server_default='3', comment='最大授权设备数量')
     disabled = Column(Boolean, server_default='0', comment='禁用标记')
     expire_time = Column(DateTime, server_default=func.now(), comment='用户过期时间')
