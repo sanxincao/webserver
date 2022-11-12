@@ -72,6 +72,7 @@ def login(phone=Body(...), password=Body(...), device_id=Body(...)):
     登录系统，分发token
     需要满足：账户有效且存在，处于有效期内，密码输入正确，设备id属于已授权设备列表，或设备id不在已授权设备列表中但已授权设备总数未达上限（此时会自动添加）
     '''
+    
     res = crud.get_user(phone)
     if res is None:
         raise Error(11)
@@ -82,8 +83,8 @@ def login(phone=Body(...), password=Body(...), device_id=Body(...)):
         raise Error(12)
     if res['disabled']:
         raise Error(13)
-    if (datetime.now() - res['expire_time']).total_seconds() > 0:# 检查用户是否过期
-        raise Error(14)
+    # if (datetime.now() - res['expire_time']).total_seconds() > 0:# 检查用户是否过期
+    #     raise Error(14)# 暂时越过检查
     if device_id not in res['authorized_device_list']:
         if len(res['authorized_device_list']) >= res['max_authorized_device_count']:
             raise Error(15)
@@ -110,14 +111,11 @@ def login(phone=Body(...), password=Body(...), device_id=Body(...)):
 
 @router.post('/getUserInfo')
 def get_user_info(token_detail=Depends(check_token)):
-    user = crud.get_user(token_detail['username'])
+    user = crud.get_user(token_detail['phone'])
     check_everything(user, token_detail['device_id'])
-    generate_result = generate_function_and_component_list(user['function_type'], user['function_list'])
     return success({
-        'nickname': user['nickname'],
-        'function_list': generate_result['function_list'],
         'expire_time': user['expire_time'].strftime('%Y-%m-%d %H:%M:%S'),
-        'component_list': generate_result['component_list'],
+
     })
 
 
