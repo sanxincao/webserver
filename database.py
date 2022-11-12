@@ -2,7 +2,7 @@ from sqlalchemy import JSON, Boolean, Column, DateTime, Enum, ForeignKey, Intege
 
 # database_url = "mysql+pymysql://test_data:6pCb3GbMBZPRAd3C@192.168.30.125/test_data"
 # database_url = "mysql+pymysql://media_database:tY5Xk3r3sf3z2dec@192.168.30.125/media_database"
-database_url = "sqlite:///../offline.db"
+database_url = "sqlite:///./offline.db"
 
 # 数据库引擎
 engine = create_engine(database_url, echo=False, future=True)
@@ -27,8 +27,9 @@ class User(Base):
     create_time = Column(DateTime, server_default=func.now(), comment='记录创建时间')
     update_time = Column(DateTime, onupdate=func.now(), server_default=func.now(), comment='记录更新时间')
 
-class serverlist(Base):
+class Serverlist(Base):
     "服务器表"
+    __tablename__ = 'serverlist'
     id = Column(Integer, primary_key=True, index=True, autoincrement=True, comment='服务器id')
     linkstring = Column(String(100), comment='服务器链接')
     type = Column(String(100), comment='服务器类型')

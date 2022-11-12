@@ -4,10 +4,7 @@ from sqlalchemy import select, insert, update, delete, func, Table
 from sqlalchemy.exc import OperationalError
 
 T_user: Table = tables['user']
-T_subject = tables['subject']
-T_record = tables['record']
-T_record_mark = tables['record_mark']
-T_subject_mark = tables['subject_mark']
+
 
 
 def __check_user_exist(username: str):
