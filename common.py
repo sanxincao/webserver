@@ -98,5 +98,28 @@ def add_salt(string: str, type: int = 0):
         return f'😂左加一个嘎嘎盐😂{string}😊右加一个嘟嘟盐😊'
     else:
         return f'🤭左加一个嘻嘻盐🤭{string}😄右加一个哈哈盐😄'
+    
+    
+def generate_function_and_component_list(function_type, function_list) -> dict:
+    '通过`function_type`(total/white/black) 生成相应的功能列表与组件列表'
+    total_function_list = config.get('function_list')
+    user_function_list = []
+    if function_type == 'total':
+        user_function_list = [item['id'] for item in total_function_list]
+    elif function_type == 'white':
+        user_function_list = [item['id'] for item in total_function_list if item['id'] in function_list]
+    elif function_type == 'black':
+        user_function_list = [item['id'] for item in total_function_list if item['id'] not in function_list]
+    user_component_list = ['backend']
+    for function_id in user_function_list:
+        for function in total_function_list:
+            if function_id == function['id']:
+                user_component_list += function['component']
+    user_component_list = list(set(user_component_list))
+    return {
+        'function_list': user_function_list,
+        'component_list': user_component_list
+    }
+
 
 

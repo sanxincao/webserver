@@ -6,7 +6,7 @@ import os
 import sys
 from time import time
 from fastapi import APIRouter, Body, Depends, File, UploadFile, Form, requests, responses
-from common import add_salt, success, Error
+from common import add_salt, success, Error,generate_function_and_component_list
 from pydantic import BaseModel
 import config
 import crud
