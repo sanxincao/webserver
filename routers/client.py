@@ -34,20 +34,6 @@ def check_token(token: str = Body(..., embed=True)):
     return token
 
 
-def check_everything(user: dict, device_id: str):
-    '检查各种事项，若出现问题直接抛出Error，这里用的user是crud.get_user()的返回结果'
-    # 检查用户是否存在
-    if user == False:
-        raise Error(1)
-    # 检查用户是否被禁用
-    if user['disabled'] == 1:
-        raise Error(2)
-    # 检查账号是否在有效期内
-    if (datetime.now() - user['expire_time']).total_seconds() > 0:
-        raise Error(3)
-    # 检查设备是否已授权
-    if device_id not in user['authorized_device_list']:
-        raise Error(4)
 
 
 @router.post('/')
@@ -56,9 +42,9 @@ def root():
     return success()
 
 @router.post('/register')
-def register(phone=Body(...), password=Body(...)):
+def register(email=Body(...)):
     '注册接口'
-    res=crud.create_user(phone,password)
+    res=crud.create_user(email)
     if res[0]==False:
         raise Error(10)
     if res[0]==True:
@@ -67,35 +53,18 @@ def register(phone=Body(...), password=Body(...)):
     
 
 @router.post('/login')
-def login(phone=Body(...), password=Body(...), device_id=Body(...)):
+def login(email=Body(...), password=Body(...), device_id=Body(...)):
     '''
     登录系统，分发token
     需要满足：账户有效且存在，处于有效期内，密码输入正确，设备id属于已授权设备列表，或设备id不在已授权设备列表中但已授权设备总数未达上限（此时会自动添加）
     '''
     
-    res = crud.get_user(phone)
+    res = crud.get_user(email)
     if res is None:
         raise Error(11)
-    # if sha1(add_salt(password, 1).encode()).hexdigest() != res['password']:
-    if  password != res['password']:
-        print(sha1(password.encode()).hexdigest())
-        print(res['password'])
-        raise Error(12)
-    if res['disabled']:
-        raise Error(13)
-    # if (datetime.now() - res['expire_time']).total_seconds() > 0:# 检查用户是否过期
-    #     raise Error(14)# 暂时越过检查
-    if device_id not in res['authorized_device_list']:
-        if len(res['authorized_device_list']) >= res['max_authorized_device_count']:
-            raise Error(15)
-        else:
-            user = dict(res)
-            user['authorized_device_list'].append(device_id)
-            del user['create_time'], user['update_time']
-            crud.change_user_information(**user)
+   
     token = {
-        "phone": phone,
-        "device_id": device_id,
+        "email": email,
         "login_time": time(),
         "expire": res['expire_time'].timestamp()
     }
@@ -108,51 +77,3 @@ def login(phone=Body(...), password=Body(...), device_id=Body(...)):
         'token': f'{token}.{signature_server}.{signature_client}'
     })
 
-
-@router.post('/getUserInfo')
-def get_user_info(token_detail=Depends(check_token)):
-    user = crud.get_user(token_detail['phone'])
-    check_everything(user, token_detail['device_id'])
-    return success({
-        'expire_time': user['expire_time'].strftime('%Y-%m-%d %H:%M:%S'),
-
-    })
-
-
-
-@router.post('/downloadComponent')
-def download_component(token_detail=Depends(check_token), component_id: str = Body(...)):
-    user = crud.get_user(token_detail['username'])
-    check_everything(user, token_detail['device_id'])
-    generate_result = generate_function_and_component_list(user['function_type'], user['function_list'])
-    if component_id not in generate_result["component_list"]:
-        raise Error(43)
-    component_detail_list = config.get('component_detail_list')
-    for component in component_detail_list:
-        if component['id'] == component_id:
-            package_path = f"{config.root_path}/components/{component_id}/{component['version']}/package.zip"
-            if os.path.exists(package_path):
-                return responses.FileResponse(package_path)
-            else:
-                raise Error(7)
-    return Error(6)
-
-
-@router.post('/downloadProgram')
-def download_program(token_detail=Depends(check_token)):
-    user = crud.get_user(token_detail['username'])
-    check_everything(user, token_detail['device_id'])
-    program_path = f"{config.root_path}/client.exe"
-    if os.path.exists(program_path):
-        return responses.FileResponse(program_path)
-    else:
-        raise Error(7)
-
-
-@router.post('/getProgramVersion')
-def get_program_version(token_detail=Depends(check_token)):
-    user = crud.get_user(token_detail['username'])
-    check_everything(user, token_detail['device_id'])
-    return success({
-        "version": config.get("client_version")
-    })
