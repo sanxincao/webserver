@@ -2,34 +2,37 @@ from datetime import datetime
 from database import engine, tables
 from sqlalchemy import select, insert, update, delete, func, Table
 from sqlalchemy.exc import OperationalError
-
+import numpy as np
 T_user: Table = tables['user']
 
 
 
-def __check_user_exist(phone: str):
+def __check_user_exist(id: np.int64):
     '检查某用户是否存在'
     with engine.connect() as con:
-        sql = select(T_user).where(T_user.c.phone == phone)
+        sql = select(T_user).where(T_user.c.id == id)
         res = con.execute(sql)
-        return len(res.all()) > 0
+        if len(res.all()) > 0:
+            return True
+        else:
+            return False
 
 
-def create_user(phone: str, password: str) -> tuple[bool, str]:
+def create_user(id: np.int64, password: str) -> tuple[bool, str]:
     '''
     ### 创建一名用户，返回创建用户的结果
     * 此处不进行密码哈希
     '''
     with engine.connect() as con:
-        sql = select(T_user).where(T_user.c.phone == phone)
+        sql = select(T_user).where(T_user.c.id == id)
         res = con.execute(sql)
         if len(res.all()) > 0:
             return False, '用户已存在'
-        sql = insert(T_user).values(phone=phone, password=password)
+        sql = insert(T_user).values(id=id, password=password)
         con.execute(sql)
         con.commit()
     with engine.connect() as conn:
-        sql = select(T_user).where(T_user.c.phone == phone)
+        sql = select(T_user).where(T_user.c.id == id)
         res = conn.execute(sql)
         if len(res.all()) > 0:
             return True, 'ok'
@@ -39,13 +42,13 @@ def create_user(phone: str, password: str) -> tuple[bool, str]:
     
 
 
-def get_user(phone: str):
+def get_user(id: np.int64):
     '''
     ### 获取一名用户的信息，包括密码、设备、权限等
     * 若用户不存在会返回`False`
     '''
     with engine.connect() as con:
-        sql = T_user.select().where(T_user.c.phone == phone)
+        sql = T_user.select().where(T_user.c.id == id)
         res = con.execute(sql)
         res = res.mappings().first()
     if res is not None:

@@ -56,9 +56,9 @@ def root():
     return success()
 
 @router.post('/register')
-def register(phone=Body(...), password=Body(...)):
+def register(id=Body(...), password=Body(...)):
     '注册接口'
-    res=crud.create_user(phone,password)
+    res=crud.create_user(id,password)
     if res[0]==False:
         raise Error(10)
     if res[0]==True:
@@ -67,19 +67,18 @@ def register(phone=Body(...), password=Body(...)):
     
 
 @router.post('/login')
-def login(phone=Body(...), password=Body(...), device_id=Body(...)):
+def login(id=Body(...), password=Body(...)):
     '''
     登录系统，分发token
     需要满足：账户有效且存在，处于有效期内，密码输入正确，设备id属于已授权设备列表，或设备id不在已授权设备列表中但已授权设备总数未达上限（此时会自动添加）
     '''
     
-    res = crud.get_user(phone)
+    res = crud.get_user(id)
     if res is None:
         raise Error(11)
     # if sha1(add_salt(password, 1).encode()).hexdigest() != res['password']:
     if  password != res['password']:
         print(sha1(password.encode()).hexdigest())
-        print(res['password'])
         raise Error(12)
     if res['disabled']:
         raise Error(13)
@@ -94,8 +93,7 @@ def login(phone=Body(...), password=Body(...), device_id=Body(...)):
             del user['create_time'], user['update_time']
             crud.change_user_information(**user)
     token = {
-        "phone": phone,
-        "device_id": device_id,
+        "id": id,     
         "login_time": time(),
         "expire": res['expire_time'].timestamp()
     }
@@ -120,39 +118,7 @@ def get_user_info(token_detail=Depends(check_token)):
 
 
 
-@router.post('/downloadComponent')
-def download_component(token_detail=Depends(check_token), component_id: str = Body(...)):
-    user = crud.get_user(token_detail['username'])
-    check_everything(user, token_detail['device_id'])
-    generate_result = generate_function_and_component_list(user['function_type'], user['function_list'])
-    if component_id not in generate_result["component_list"]:
-        raise Error(43)
-    component_detail_list = config.get('component_detail_list')
-    for component in component_detail_list:
-        if component['id'] == component_id:
-            package_path = f"{config.root_path}/components/{component_id}/{component['version']}/package.zip"
-            if os.path.exists(package_path):
-                return responses.FileResponse(package_path)
-            else:
-                raise Error(7)
-    return Error(6)
 
 
-@router.post('/downloadProgram')
-def download_program(token_detail=Depends(check_token)):
-    user = crud.get_user(token_detail['username'])
-    check_everything(user, token_detail['device_id'])
-    program_path = f"{config.root_path}/client.exe"
-    if os.path.exists(program_path):
-        return responses.FileResponse(program_path)
-    else:
-        raise Error(7)
 
 
-@router.post('/getProgramVersion')
-def get_program_version(token_detail=Depends(check_token)):
-    user = crud.get_user(token_detail['username'])
-    check_everything(user, token_detail['device_id'])
-    return success({
-        "version": config.get("client_version")
-    })
