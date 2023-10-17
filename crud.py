@@ -2,6 +2,8 @@ from datetime import datetime
 from database import engine, tables
 from sqlalchemy import select, insert, update, delete, func, Table
 from sqlalchemy.exc import OperationalError
+from common import add_salt
+from hashlib import sha1,sha256
 import numpy as np
 T_user: Table = tables['user']
 
@@ -18,16 +20,17 @@ def __check_user_exist(id: np.int64):
             return False
 
 
-def create_user(id: np.int64, password: str) -> tuple[bool, str]:
+def itcreate_user(id: np.int64, password: str) -> tuple[bool, str]:
     '''
     ### 创建一名用户，返回创建用户的结果
-    * 此处不进行密码哈希
+    * 此处进行密码哈希
     '''
     with engine.connect() as con:
         sql = select(T_user).where(T_user.c.id == id)
         res = con.execute(sql)
         if len(res.all()) > 0:
             return False, '用户已存在'
+        password=sha1(add_salt(password))
         sql = insert(T_user).values(id=id, password=password)
         con.execute(sql)
         con.commit()

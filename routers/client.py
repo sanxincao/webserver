@@ -42,23 +42,18 @@ def check_everything(user: dict, device_id: str):
     # 检查用户是否被禁用
     if user['disabled'] == 1:
         raise Error(2)
-    # 检查账号是否在有效期内
-    if (datetime.now() - user['expire_time']).total_seconds() > 0:
-        raise Error(3)
-    # 检查设备是否已授权
-    if device_id not in user['authorized_device_list']:
-        raise Error(4)
-
+   
 
 @router.post('/')
 def root():
     '根路由'
     return success()
 
-@router.post('/register')
-def register(id=Body(...), password=Body(...)):
+@router.post('/itregister')
+def register(name=Body(...), email=Body(...),skill_tree=Body(...),
+             payment_method=Body(...),password=Body(...)):
     '注册接口'
-    res=crud.create_user(id,password)
+    res=crud.itcreate_user(name,email,skill_tree,payment_method,password)
     if res[0]==False:
         raise Error(10)
     if res[0]==True:

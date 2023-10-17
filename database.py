@@ -23,15 +23,20 @@ class User(Base):
     name = Column(String(20),  server_default='小皮皮',comment='用户名')
     password = Column(String(40), comment='密码(sha1)')
     skill_tree = Column(JSON, default=[], comment='用户技能树')   
+    level=Column(Enum('F','E','D','C','B','A','S','SS','SSS' ,name='level'))
+    income = Column(Integer, server_default='0', comment='收入')
     # max_authorized_device_count = Column(Integer, server_default='3', comment='最大授权设备数量')
     disabled = Column(Boolean, server_default='0', comment='禁用标记')
+    github_verify = Column(Boolean, server_default='0', comment='github验证标记')
+    github_url= Column(String(40), comment='github地址')
     online_state = Column(Boolean, server_default='0', comment='在线状态')
+    connection_id = Column(String(40), comment='连接id')#qq or wechat or wathapp
     #优先权重
     priority = Column(Integer, server_default='100', comment='优先权重')
     create_time = Column(DateTime, server_default=func.now(), comment='记录创建时间')
     update_time = Column(DateTime, onupdate=func.now(), server_default=func.now(), comment='记录更新时间')
     #payment_method 
-    Column(Enum('alipay', 'wechat', 'bankcard', 'usdt', name='payment_method'), comment='支付方式')
+    payment_method = Column(Enum('alipay', 'wechat', 'bankcard', 'usdt', name='payment_method'), comment='支付方式')
 
 class Customer(Base):
     '客户表'
@@ -75,8 +80,12 @@ class Order(Base):
     customer_id = Column(String(20), ForeignKey('customer.customer_id'), comment='客户ID')
     #交易对方
     counterparty = Column(BigInteger(unsigned=True), ForeignKey('user.usrid'),comment='交易对方')
+    #order_state
+    order_state = Column(Enum('waitingcomfirm','comfirmed','success', 'fail', name='order_state'), comment='订单状态')
     #交易类型
     order_type = Column(String(20), comment='交易类型')
+    #payment_method
+    payment_method = Column(Enum('alipay', 'wechat', 'bankcard', 'usdt', name='payment_method'), comment='支付方式')
     #price
     price = Column(String(20), comment='价格')
     #start_time
