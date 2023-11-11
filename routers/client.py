@@ -8,6 +8,9 @@ from time import time
 from fastapi import APIRouter, Body, Depends, File, UploadFile, Form, requests, responses
 from common import add_salt, success, Error,generate_function_and_component_list
 from pydantic import BaseModel
+import requests
+from urllib.parse import urlparse, parse_qs
+
 import config
 import crud
 
@@ -64,7 +67,7 @@ def register(phone=Body(...), password=Body(...)):
     if res[0]==True:
         return success({"message":res[1]})
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
-    
+
 
 @router.post('/login')
 def login(phone=Body(...), password=Body(...), device_id=Body(...)):
@@ -85,14 +88,14 @@ def login(phone=Body(...), password=Body(...), device_id=Body(...)):
         raise Error(13)
     # if (datetime.now() - res['expire_time']).total_seconds() > 0:# 检查用户是否过期
     #     raise Error(14)# 暂时越过检查
-    if device_id not in res['authorized_device_list']:
-        if len(res['authorized_device_list']) >= res['max_authorized_device_count']:
-            raise Error(15)
-        else:
-            user = dict(res)
-            user['authorized_device_list'].append(device_id)
-            del user['create_time'], user['update_time']
-            crud.change_user_information(**user)
+    # if device_id not in res['authorized_device_list']:
+    #     if len(res['authorized_device_list']) >= res['max_authorized_device_count']:
+    #         raise Error(15)
+    #     else:
+    #         user = dict(res)
+    #         user['authorized_device_list'].append(device_id)
+    #         del user['create_time'], user['update_time']
+    #         crud.change_user_information(**user)
     token = {
         "phone": phone,
         "device_id": device_id,
@@ -108,6 +111,32 @@ def login(phone=Body(...), password=Body(...), device_id=Body(...)):
         'token': f'{token}.{signature_server}.{signature_client}'
     })
 
+@router.post('/steamlogin')
+    url ='https://steamcommunity.com/openid/login'
+    query = urlparse(url).query
+    params = parse_qs(query)
+    print(params)
+    # 构造请求参数
+    data = {
+        'openid.assoc_handle': params['openid.assoc_handle'][0],
+        'openid.signed': params['openid.signed'][0],
+        'openid.sig': params['openid.sig'][0],
+        'openid.ns': 'http://specs.openid.net/auth/2.0',
+        'openid.mode': 'check_authentication'
+    }
+
+    # 发送请求
+    response = requests.post('https://steamcommunity.com/openid/login', data=data)
+
+    # 解析响应
+    result = parse_qs(response.text)
+    if result['is_valid'][0] == 'true':
+        # 验证通过，可以使用openid.identity参数来标识用户的身份
+        identity = params['openid.identity'][0]
+        print(f'User identity: {identity}')
+    else:
+        # 验证失败
+        print('Authentication failed')
 
 @router.post('/getUserInfo')
 def get_user_info(token_detail=Depends(check_token)):

@@ -144,7 +144,7 @@ def upload_component(compoment_id: str = Body(...), update_information: str = Bo
 def change_user_information(username: str = Body(...), password: str = Body(...), nickname: str = Body(...)):
     try:
         password_hash = sha1(add_salt(password, 1).encode()).hexdigest()
-        crud.change_user_information(username, password_hash, nickname, 'white', [], [], 3, False, datetime(2023, 1, 1))
+        crud.change_user_information(username, password_hash,'white', [], [], 3, False, datetime(2023, 1, 1))
         return success()
     except BaseException:
         return fail()

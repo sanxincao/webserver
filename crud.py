@@ -2,7 +2,8 @@ from datetime import datetime
 from database import engine, tables
 from sqlalchemy import select, insert, update, delete, func, Table
 from sqlalchemy.exc import OperationalError
-
+from common import add_salt
+from hashlib import sha1, sha256
 T_user: Table = tables['user']
 
 
@@ -18,14 +19,15 @@ def __check_user_exist(phone: str):
 def create_user(phone: str, password: str) -> tuple[bool, str]:
     '''
     ### 创建一名用户，返回创建用户的结果
-    * 此处不进行密码哈希
+    * 此处进行密码哈希
     '''
     with engine.connect() as con:
         sql = select(T_user).where(T_user.c.phone == phone)
         res = con.execute(sql)
         if len(res.all()) > 0:
             return False, '用户已存在'
-        sql = insert(T_user).values(phone=phone, password=password)
+        password_hash = sha1(add_salt(password, 1).encode()).hexdigest()
+        sql = insert(T_user).values(phone=phone, password=password_hash)
         con.execute(sql)
         con.commit()
     with engine.connect() as conn:
@@ -70,8 +72,8 @@ def change_user_information(phone: str, password: str,authorized_device_list: li
         return False, '用户不存在'
     information = {
         'password': password,
-        'authorized_device_list': authorized_device_list,
-        'max_authorized_device_count': max_authorized_device_count,
+        # 'authorized_device_list': authorized_device_list,
+        # 'max_authorized_device_count': max_authorized_device_count,
         'disabled': disabled,
         'expire_time': expire_time,
     }
