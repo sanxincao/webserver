@@ -5,10 +5,10 @@ from base64 import b64encode as base64_encode, b64decode as base64_decode
 import os
 import sys
 from time import time
-from fastapi import APIRouter, Body, Depends, File, UploadFile, Form, requests, responses
+from fastapi import APIRouter, Body, Depends, File, UploadFile, Form, Request, responses
 from common import add_salt, success, Error,generate_function_and_component_list
 from pydantic import BaseModel
-import requests
+import requests as requestslib
 from urllib.parse import urlparse, parse_qs
 
 import config
@@ -66,7 +66,7 @@ def register(phone=Body(...), password=Body(...)):
         raise Error(10)
     if res[0]==True:
         return success({"message":res[1]})
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
 
 
 @router.post('/login')
@@ -78,7 +78,7 @@ def login(phone=Body(...), password=Body(...), device_id=Body(...)):
     
     res = crud.get_user(phone)
     if res is None:
-        raise Error(11)
+        raise Error(11) 
     # if sha1(add_salt(password, 1).encode()).hexdigest() != res['password']:
     if  password != res['password']:
         print(sha1(password.encode()).hexdigest())
@@ -111,33 +111,37 @@ def login(phone=Body(...), password=Body(...), device_id=Body(...)):
         'token': f'{token}.{signature_server}.{signature_client}'
     })
 
-@router.post('/steamlogin')
+@router.get('/steamlogin')
+def steamlogin(request: Request):
     url ='https://steamcommunity.com/openid/login'
-    query = urlparse(url).query
-    params = parse_qs(query)
-    print(params)
+    query_params = dict(request.query_params)
+   
+    print(query_params)
     # 构造请求参数
-    data = {
-        'openid.assoc_handle': params['openid.assoc_handle'][0],
-        'openid.signed': params['openid.signed'][0],
-        'openid.sig': params['openid.sig'][0],
-        'openid.ns': 'http://specs.openid.net/auth/2.0',
-        'openid.mode': 'check_authentication'
-    }
-
-    # 发送请求
-    response = requests.post('https://steamcommunity.com/openid/login', data=data)
-
-    # 解析响应
-    result = parse_qs(response.text)
-    if result['is_valid'][0] == 'true':
-        # 验证通过，可以使用openid.identity参数来标识用户的身份
-        identity = params['openid.identity'][0]
-        print(f'User identity: {identity}')
+    if len(query_params['openid.assoc_handle'])>0:
+        data = {
+            'openid.assoc_handle': query_params['openid.assoc_handle'][0],
+            'openid.signed': query_params['openid.signed'][0],
+            'openid.sig': query_params['openid.sig'][0],
+            'openid.ns': 'http://specs.openid.net/auth/2.0',
+            'openid.mode': 'check_authentication'
+        }
+        # 发送请求
+        response = requestslib.post(url, data=data)
+        if response.status_code == 200:   
+            # 解析响应
+            result = response.json()
+            print(result)
+            if result['is_valid'][0] == 'true':
+                # 验证通过，可以使用openid.identity参数来标识用户的身份
+                identity = result['openid.identity'][0]
+                print(f'User identity: {identity}')
+            else:
+                # 验证失败
+                Error(6)
+                print('Authentication failed')
     else:
-        # 验证失败
-        print('Authentication failed')
-
+        Error(6)
 @router.post('/getUserInfo')
 def get_user_info(token_detail=Depends(check_token)):
     user = crud.get_user(token_detail['phone'])
