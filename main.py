@@ -19,8 +19,9 @@ def exception_handler(request, exception: Error):
 @app.get('/')
 def root():
     return success()
-
+#source /path/to/venv/bin/activate
+#pip install "uvicorn[standard]"
 
 if __name__ == '__main__':
     import uvicorn
-    uvicorn.run('main:app', port=8002, host='0.0.0.0', reload=True)
+    uvicorn.run('main:app', port=7777, host='0.0.0.0', reload=True)
