@@ -115,14 +115,28 @@ def login(phone=Body(...), password=Body(...), device_id=Body(...)):
 def steamlogin(request: Request):
     url ='https://steamcommunity.com/openid/login'
     query_params = dict(request.query_params)
-   
-    print(query_params)
+    # {'openid.ns': 'http://specs.openid.net/auth/2.0', 
+    # 'openid.mode': 'id_res', 'openid.op_endpoint': 
+    # 'https://steamcommunity.com/openid/login', 'openid.claimed_id': 
+    # 'https://steamcommunity.com/openid/id/76561198325866293', 
+    # 'openid.identity': 'https://steamcommunity.com/openid/id/76561198325866293', 
+    # 'openid.return_to': 'http://www.stackneverflow.com:7777/client/steamlogin', 
+    # 'openid.response_nonce': '2023-11-11T17:55:38ZRwhHdCefNTfztTXkNgB9c4+uNFs=', '
+    # openid.assoc_handle': '1234567890', 
+    # 'openid.signed': 'signed,op_endpoint,claimed_id,identity,return_to,response_nonce,assoc_handle', 'openid.sig': '6HK/CJQqE0svj9E4DImFm9EDwLs='}
+    print("query_params":query_params)
+    
     # 构造请求参数
     if len(query_params['openid.assoc_handle'])>0:
         data = {
-            'openid.assoc_handle': query_params['openid.assoc_handle'][0],
-            'openid.signed': query_params['openid.signed'][0],
-            'openid.sig': query_params['openid.sig'][0],
+            'openid.assoc_handle': query_params['openid.assoc_handle'],
+            'openid.signed': query_params['openid.signed'],
+            'openid.sig':query_params['openid.sig'],
+            'openid.op_endpoint': query_params['openid.op_endpoint'],
+            'openid.claimed_id': query_params[ 'openid.claimed_id'],
+            'openid.identity': query_params['openid.identity'],
+            'openid.return_to': query_params['openid.return_to'],
+            'openid.response_nonce': query_params['openid.response_nonce'],
             'openid.ns': 'http://specs.openid.net/auth/2.0',
             'openid.mode': 'check_authentication'
         }
