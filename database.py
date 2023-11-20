@@ -27,14 +27,6 @@ class User(Base):
     create_time = Column(DateTime, server_default=func.now(), comment='记录创建时间')
     update_time = Column(DateTime, onupdate=func.now(), server_default=func.now(), comment='记录更新时间')
 
-class Serverlist(Base):
-    "服务器表"
-    __tablename__ = 'serverlist'
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True, comment='服务器id')
-    linkstring = Column(String(100), comment='服务器链接')
-    type = Column(String(100), comment='服务器类型')
-    expire_time = Column(DateTime, server_default=func.now(), comment='服务器过期时间')
-    
     
 
 metadata.create_all(engine)

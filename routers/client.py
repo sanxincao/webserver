@@ -45,12 +45,12 @@ def check_everything(user: dict, device_id: str):
     # 检查用户是否被禁用
     if user['disabled'] == 1:
         raise Error(2)
-    # 检查账号是否在有效期内
-    if (datetime.now() - user['expire_time']).total_seconds() > 0:
-        raise Error(3)
-    # 检查设备是否已授权
-    if device_id not in user['authorized_device_list']:
-        raise Error(4)
+    # # 检查账号是否在有效期内
+    # if (datetime.now() - user['expire_time']).total_seconds() > 0:
+    #     raise Error(3)
+    # # 检查设备是否已授权
+    # if device_id not in user['authorized_device_list']:
+    #     raise Error(4)
 
 
 @router.post('/')
@@ -125,6 +125,18 @@ def steamlogin(request: Request):
     # openid.assoc_handle': '1234567890', 
     # 'openid.signed': 'signed,op_endpoint,claimed_id,identity,return_to,response_nonce,assoc_handle', 'openid.sig': '6HK/CJQqE0svj9E4DImFm9EDwLs='}
     print("query_params":query_params)
+    steamid=query_params['openid.claimed_id'].split('/')[-1]
+    token = {
+        "steamid": steamid,
+    
+        "login_time": time(),
+        # "expire": res['expire_time'].timestamp()
+    }
+    token = base64_encode(json_dumps(token, ensure_ascii=False).encode()).decode()
+    # 用于服务器校验
+    signature_server = sha256(add_salt(token, 0).encode()).hexdigest()
+    # 用于客户端校验
+    signature_client = sha256((f'{token}{signature_server}').encode()).hexdigest()
     
     # 构造请求参数
     if len(query_params['openid.assoc_handle'])>0:
@@ -140,20 +152,23 @@ def steamlogin(request: Request):
             'openid.ns': 'http://specs.openid.net/auth/2.0',
             'openid.mode': 'check_authentication'
         }
+        return success({
+        'token': f'{token}.{signature_server}.{signature_client}'
+    })
         # 发送请求
-        response = requestslib.post(url, data=data)
-        if response.status_code == 200:   
-            # 解析响应
-            result = response.json()
-            print(result)
-            if result['is_valid'][0] == 'true':
-                # 验证通过，可以使用openid.identity参数来标识用户的身份
-                identity = result['openid.identity'][0]
-                print(f'User identity: {identity}')
-            else:
-                # 验证失败
-                Error(6)
-                print('Authentication failed')
+        # response = requestslib.post(url, data=data)
+        # if response.status_code == 200:   
+        #     # 解析响应
+        #     result = response.json()
+        #     print(result)
+        #     if result['is_valid'][0] == 'true':
+        #         # 验证通过，可以使用openid.identity参数来标识用户的身份
+        #         identity = result['openid.identity'][0]
+        #         print(f'User identity: {identity}')
+        #     else:
+        #         # 验证失败
+        #         Error(6)
+        #         print('Authentication failed')
     else:
         Error(6)
 @router.post('/getUserInfo')
