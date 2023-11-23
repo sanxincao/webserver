@@ -124,7 +124,8 @@ def steamlogin(request: Request):
     # 'openid.response_nonce': '2023-11-11T17:55:38ZRwhHdCefNTfztTXkNgB9c4+uNFs=', '
     # openid.assoc_handle': '1234567890', 
     # 'openid.signed': 'signed,op_endpoint,claimed_id,identity,return_to,response_nonce,assoc_handle', 'openid.sig': '6HK/CJQqE0svj9E4DImFm9EDwLs='}
-    print("query_params":query_params)
+    print("query_params:")
+    print(query_params)
     steamid=query_params['openid.claimed_id'].split('/')[-1]
     token = {
         "steamid": steamid,
